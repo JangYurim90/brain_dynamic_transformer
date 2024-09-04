@@ -5,7 +5,7 @@ def args_parser():
 ##
 
     # data preprocessing arguments
-    parser.add_argument('--HCPdata_dir', type=str, default='C:/Users/BamiDeep1/Desktop/FLEG0420/dataset',
+    parser.add_argument('--HCPdata_dir', type=str, default='/data/camin/yrjang/HCP_data',
                         help='HCP dataset_directory')
     parser.add_argument('--train_size', type=float, default=0.7, 
                         help="ratio of train data")
@@ -13,7 +13,8 @@ def args_parser():
                         help="ratio of validation data")
     parser.add_argument('--test_size', type=float, default=0.15, 
                         help="ratio of test data")
-    
+    parser.add_argument('--atlas', type=int, default=300,
+                        help='Atlas - (100, 200, 300, 400, MMP)')
     
     # sliding window arguments
     parser.add_argument('--i_win', type=int, default=100, 

@@ -7,6 +7,20 @@ from glob import glob
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
 
+
+def hcp_data_load(atlas, data_dir):
+    dataset = np.load(data_dir + '/HCP_'+atlas+'_data.npz')
+    
+    data_x = []
+    
+    for data in dataset['roiTimeseries']:
+        data_x.append(data)
+    
+    data_x = np.array(data_x)
+    return data_x
+    
+    
+    
 def data_split(data,train_size, val_size, test_size, random_state=3):
     # data shuffle
     if random_state is not None:
@@ -74,7 +88,10 @@ class windowDataset(Dataset):
         self.y = total_X_concat
         
         self.len = len(X)
+        
     def __getitem__(self, i):
-        return self.x[i], self.y[i, :-1], self.y[i,1:]
+        return self.x[i], self.y[i]
+    
+
     def __len__(self):
         return self.len

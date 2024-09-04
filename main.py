@@ -11,7 +11,7 @@ import seaborn as sns
 import scipy
 from torch.utils.data import DataLoader, Dataset
 from argument import args_parser
-from dataloader import data_split, windowDataset
+from dataloader import data_split, windowDataset, hcp_data_load
 import torch
 from torch import nn
 from model import TFModel,PositionalEncoding
@@ -35,6 +35,7 @@ device = torch.device("cuda:0")
 
 load_data = np.load(args.HCPdata_dir)
 # data만 따로 추출 하는 코드
+load_data = hcp_data_load(args.atlas,args.HCPdata_dir)
 
 # data split
 train_data, val_data, test_data = data_split(load_data,args.train_size,args.val_size,args.test_size,random_state = 3)
@@ -49,22 +50,22 @@ val_loader = DataLoader(val_dataset,batch_size=args.batch_size)
 test_loader = DataLoader(test_dataset,batch_size=args.batch_size)
 
 # Load model (transformer)
-model = TFModel(args.roi,args.d_model, args.nhead, args.nhid, args.nlayers, args.dropout).to(device)
+model = TFModel(d_model=args.atlas, nhead=args.nhead, nhid=args.nhid, nlayers=args.nlayers, dropout=args.dropout).to(device)
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
 # train
 model.train()
-progress = tqdm(range(epoch))
+progress = tqdm(range(args.epoch))
 for i in progress:
     batchloss = 0.0
     
-    for (inputs, dec_inputs, outputs) in train_loader:
+    for (inputs, outputs) in train_loader:
         optimizer.zero_grad()
         src_mask = model.generate_square_subsequent_mask(inputs.shape[1]).to(device)
-        tgt_mask = model.generate_square_subsequent_mask(dec_inputs.shape[1]).to(device)
+        #tgt_mask = model.generate_square_subsequent_mask(dec_inputs.shape[1]).to(device)
 
-        result = model(inputs.float().to(device), dec_inputs.float().to(device), src_mask, tgt_mask)
+        result = model(inputs.float().to(device), src_mask)
         loss = criterion(result.permute(1,0,2), outputs.float().to(device))
         
         loss.backward()
