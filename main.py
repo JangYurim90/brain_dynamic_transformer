@@ -15,6 +15,7 @@ from dataloader import data_split, windowDataset, hcp_data_load
 import torch
 from torch import nn
 from model import TFModel,PositionalEncoding
+from models.model import Transformer
 from tqdm import tqdm
 
 def evaluate(length):
@@ -72,7 +73,10 @@ for i in progress:
         optimizer.step()
         batchloss += loss
     progress.set_description("{:0.5f}".format(batchloss.cpu().item() / len(train_loader)))
-    
+
+
+# load model 2
+model = Transformer(src_pad_idx=args.src_pad_idx, trg_pad_idx=args.trg_pad_idx, trg_sos_idx=args.trg_sos_idx, enc_voc_size=args.atlas, dec_voc_size=args.atlas, d_model=args.d_model, n_head=args.nhead, max_len=args.i_win, ffn_hidden=args.nhid, n_layers=args.nlayers, drop_prob=args.dropout, device=device).to(device)
     
 # Validation 
 

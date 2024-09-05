@@ -13,7 +13,7 @@ def args_parser():
                         help="ratio of validation data")
     parser.add_argument('--test_size', type=float, default=0.15, 
                         help="ratio of test data")
-    parser.add_argument('--atlas', type=int, default=300,
+    parser.add_argument('--atlas', type=str, default='300',
                         help='Atlas - (100, 200, 300, 400, MMP)')
     
     # sliding window arguments
@@ -26,22 +26,22 @@ def args_parser():
     
     
     # model arguments
-    parser.add_argument('--batch_size', type=int, default=64, 
+    parser.add_argument('--batch_size', type=int, default=32, 
                         help="batch_size")
-    parser.add_argument('--d_model', type=int, default=256, 
+    parser.add_argument('--d_model', type=int, default=314, 
                         help="batch_size")
-    parser.add_argument('--nhead', type=int, default=8, 
+    parser.add_argument('--nhead', type=int, default=2, 
                         help="batch_size")
     parser.add_argument('--nhid', type=int, default=256, 
                         help="batch_size")
     parser.add_argument('--nlayers', type=int, default=2, 
                         help="batch_size")
-    parser.add_argument('--dropout', type=float, default=0.1, 
+    parser.add_argument('--dropout', type=float, default=0.01, 
                         help="batch_size")
     
     parser.add_argument('--lr', type=float, default=0.002, #0.01 ->0.001
                         help='learning rate') 
-    parser.add_argument('--epoch', type=int, default=1, #10->50
+    parser.add_argument('--epoch', type=int, default=5, #10->50
                         help="number of rounds of training")
     
     
@@ -49,7 +49,6 @@ def args_parser():
                         help='SGD momentum (default: 0.5)') #sagnet=0.9
 
     # model arguments
-    parser.add_argument('--model', type=str, default='cnn', help='model name')
     parser.add_argument('--kernel_num', type=int, default=9,
                         help='number of each kind of kernel')
     parser.add_argument('--kernel_sizes', type=str, default='3,4,5',
@@ -68,10 +67,6 @@ def args_parser():
 
     # other arguments
     parser.add_argument('--seed', type=int, default=1, help='random seed')
-
-
-    parser.add_argument('--dataset-dir', type=str, default='C:/Users/BamiDeep1/Desktop/FLEG0420/dataset',
-                        help='Sagnet:: home directory to dataset')
     
 
     args = parser.parse_args()
