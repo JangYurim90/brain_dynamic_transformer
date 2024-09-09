@@ -26,7 +26,6 @@ class CustomMultiheadAttention(nn.Module):
 
         # Compute Q, K, V manually using linear projection
         q, k, v = self._in_proj_qkv(query, key, value)
-        print(q.shape, k.shape, v.shape)
 
         # Call MultiheadAttention with manually computed Q, K, V
         attn_output, attn_weights = self.multihead_attn(q, k, v, attn_mask=attn_mask, key_padding_mask=key_padding_mask)
@@ -85,11 +84,13 @@ class CustomTransformerDecoderLayer(nn.Module):
 
     def forward(self, tgt, memory, tgt_mask=None, memory_mask=None, tgt_key_padding_mask=None, memory_key_padding_mask=None):
         # Self-attention with Q, K, V extraction
+
         tgt2, attn_weights, q, k, v = self.self_attn(tgt, tgt, tgt, attn_mask=tgt_mask, key_padding_mask=tgt_key_padding_mask)
         tgt = self.norm1(tgt + self.dropout(tgt2))
         
         # Cross-attention with memory
-        tgt2, attn_weights, q2, k2, v2 = self.multihead_attn(tgt, memory, memory, attn_mask=memory_mask, key_padding_mask=memory_key_padding_mask)
+        cross_mask = generate_cross_mask(tgt.shape[0], memory.shape[0]).to(tgt.device)
+        tgt2, attn_weights, q2, k2, v2 = self.multihead_attn(tgt, memory, memory, attn_mask=cross_mask, key_padding_mask=memory_key_padding_mask)
         tgt = self.norm2(tgt + self.dropout(tgt2))
 
         # Feedforward network with residual connection
@@ -97,3 +98,20 @@ class CustomTransformerDecoderLayer(nn.Module):
         tgt = self.norm3(tgt + self.dropout(tgt2))
 
         return tgt, q, k, v  # Return Q, K, V
+    
+
+
+def generate_cross_mask(tgt_len, src_len):
+    """
+    Generates a mask to prevent the model from attending to padding tokens.
+    
+    Args:
+        tgt_len (int): The length of the target sequence.
+        src_len (int): The length of the source sequence.
+    
+    Returns:
+        torch.Tensor: A mask of size (tgt_len, src_len) with 0s where padding tokens are present and 1s elsewhere.
+    """
+    mask = (torch.triu(torch.ones(src_len,tgt_len)) == 1).transpose(0, 1)
+    mask = mask.float().masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, float(0.0))
+    return mask

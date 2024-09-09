@@ -7,6 +7,9 @@ def args_parser():
     # data preprocessing arguments
     parser.add_argument('--HCPdata_dir', type=str, default='/data/camin/yrjang/HCP_data',
                         help='HCP dataset_directory')
+    parser.add_argument('--loss_dir', type=str, default='/data/camin/yrjang/Brain_network_dynamics/Dynamics_RNN/train_result',
+                        help='HCP dataset_directory')
+    
     parser.add_argument('--train_size', type=float, default=0.7, 
                         help="ratio of train data")
     parser.add_argument('--val_size', type=float, default=0.15, 
@@ -41,8 +44,9 @@ def args_parser():
     
     parser.add_argument('--lr', type=float, default=0.002, #0.01 ->0.001
                         help='learning rate') 
-    parser.add_argument('--epoch', type=int, default=5, #10->50
+    parser.add_argument('--epoch', type=int, default=100, #10->50
                         help="number of rounds of training")
+    parser.add_argument('--mode', type=str, default='test', help='train or test')
     
     
     parser.add_argument('--momentum', type=float, default=0.9,

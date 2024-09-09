@@ -38,7 +38,7 @@ class TFModel(nn.Module):
         self.transformer_decoder = nn.ModuleList([decoder_layers for _ in range(nlayers)])
 
         self.d_model = d_model
-        self.fc_out = nn.Linear(d_model, 1)  # Predict a single value per timepoint and ROI
+        self.fc_out = nn.Linear(d_model, 314)  # Predict a single value per timepoint and ROI
 
         self.input_length = input_length
         self.output_length = output_length
@@ -50,6 +50,8 @@ class TFModel(nn.Module):
 
         # Decoder
         tgt = self.pos_encoder(tgt)
+    
+
         output, dec_qkv = self.transformer_decoder_with_qkv(tgt, memory, tgt_mask, src_mask)  # Get Q, K, V from decoder
 
         output = self.fc_out(output)  # Convert to (batch_size, output_length, d_model)
@@ -77,8 +79,8 @@ class TFModel(nn.Module):
         mask = (torch.triu(torch.ones(sz, sz)) == 1).transpose(0, 1)
         mask = mask.float().masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, float(0.0))
         return mask
- 
-    
+
+
     def generate_square_subsequent_mask(self, tgt_len, src_len):
         """
         Generates an upper triangular mask of -inf and 0s, 
@@ -94,7 +96,7 @@ class TFModel(nn.Module):
         mask = torch.triu(torch.ones(tgt_len, src_len), diagonal=1)  # 상삼각 행렬 생성
         mask = mask.masked_fill(mask == 1, float('-inf'))  # 1인 부분을 -inf로 변환
         return mask  # (tgt_len, src_len)의 마스크 반환
-    
+
     def generate_square_subsequent_mask_2(self,sz):
         """
         Generates an upper triangular mask of -inf and 0s, 
@@ -109,4 +111,3 @@ class TFModel(nn.Module):
         mask = torch.triu(torch.ones(sz, sz), diagonal=1)  # 상삼각 행렬 생성
         mask = mask.masked_fill(mask == 1, float('-inf'))  # 1인 부분을 -inf로 변환
         return mask
-
