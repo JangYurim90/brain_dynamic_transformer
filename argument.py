@@ -4,6 +4,8 @@ def args_parser():
     parser = argparse.ArgumentParser()
 ##
 
+    parser.add_argument('--mode', type=str, default='train', help='train or test')
+    
     # data preprocessing arguments
     parser.add_argument('--HCPdata_dir', type=str, default='/data/camin/yrjang/HCP_data',
                         help='HCP dataset_directory')
@@ -31,24 +33,26 @@ def args_parser():
     # model arguments
     parser.add_argument('--batch_size', type=int, default=32, 
                         help="batch_size")
-    parser.add_argument('--d_model', type=int, default=314, 
-                        help="batch_size")
-    parser.add_argument('--nhead', type=int, default=2, 
-                        help="batch_size")
+    parser.add_argument('--d_model', type=int, default=64, 
+                        help='Internal dimension of transformer embeddings')
+    parser.add_argument('--nhead', type=int, default=4, 
+                        help='Number of multi-headed attention heads')
     parser.add_argument('--nhid', type=int, default=256, 
-                        help="batch_size")
-    parser.add_argument('--nlayers', type=int, default=2, 
-                        help="batch_size")
-    parser.add_argument('--dropout', type=float, default=0.01, 
-                        help="batch_size")
+                        help="number of hidden units in the feedforward network")
+    parser.add_argument('--feature_dim', type=int, default=314,
+                        help = "number of features")
     
-    parser.add_argument('--lr', type=float, default=0.002, #0.01 ->0.001
+    parser.add_argument('--nlayers', type=int, default=2, 
+                       help='Number of transformer encoder layers (blocks)')
+    parser.add_argument('--dim_feedforward', type=int, default=256,
+                                 help='Dimension of dense feedforward part of transformer layer')
+    parser.add_argument('--dropout', type=float, default=0.01, 
+                        help='Dropout applied to most transformer encoder layers')
+    
+    parser.add_argument('--lr', type=float, default=0.005, #0.01 ->0.001
                         help='learning rate') 
     parser.add_argument('--epoch', type=int, default=100, #10->50
                         help="number of rounds of training")
-    parser.add_argument('--mode', type=str, default='test', help='train or test')
-    
-    
     parser.add_argument('--momentum', type=float, default=0.9,
                         help='SGD momentum (default: 0.5)') #sagnet=0.9
 
@@ -68,6 +72,7 @@ def args_parser():
     parser.add_argument('--max_pool', type=str, default='True',
                         help="Whether use max pooling rather than \
                         strided convolutions")
+    parser.add_argument('--l2_reg, type=bool', default=True)
 
     # other arguments
     parser.add_argument('--seed', type=int, default=1, help='random seed')

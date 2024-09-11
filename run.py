@@ -16,7 +16,6 @@ from dataloader import data_split, windowDataset, hcp_data_load
 import torch
 from torch import nn
 from transformer import TFModel,PositionalEncoding
-from models.model import Transformer
 from tqdm import tqdm
 from datetime import datetime
 
@@ -169,7 +168,7 @@ args = args_parser()
 device = torch.device("cuda:0")
 
 # Save the model with the lowest validation loss
-save_dir = "{}/{}_{}_{}_{}".format(args.loss_dir, args.atlas, args.i_win, args.o_win, 100)
+save_dir = "{}/A{}_i{}_o{}_sub{}".format(args.loss_dir, args.atlas, args.i_win, args.o_win, 100)
 create_directory_if_not_exists(save_dir)
 
 
@@ -226,7 +225,7 @@ if args.mode == 'train':
 
 if args.mode == 'test':
     # Test loop
-    model_path = f'{save_dir}/model_2024-09-09_18-02-40.pth'
+    model_path = f'{save_dir}/model_2024-09-10_11-05-38.pth'
     test_loss, loss_per_subject,plot = test(model, test_loader, model_path)
     test_loss_cpu = test_loss.cpu().item() if isinstance(test_loss, torch.Tensor) else test_loss
     loss_per_subject_cpu = [loss.cpu().item() if isinstance(loss, torch.Tensor) else loss for loss in loss_per_subject]

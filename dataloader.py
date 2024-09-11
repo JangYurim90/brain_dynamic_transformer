@@ -9,11 +9,11 @@ from sklearn.model_selection import train_test_split
 
 
 def hcp_data_load(atlas, data_dir):
-    dataset = np.load(data_dir + '/HCP_'+atlas+'_data_sub20.npy', allow_pickle=True)
+    dataset = np.load(data_dir + '/HCP_'+atlas+'_data_sub100.npy', allow_pickle=True)
     
     data_x = []
     
-    for data in dataset:
+    for data in dataset[:50]:
         data_x.append(data['roiTimeseries'])
     
     data_x = np.array(data_x)

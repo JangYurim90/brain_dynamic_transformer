@@ -38,7 +38,7 @@ class TFModel(nn.Module):
         self.transformer_decoder = nn.ModuleList([decoder_layers for _ in range(nlayers)])
 
         self.d_model = d_model
-        self.fc_out = nn.Linear(d_model, 314)  # Predict a single value per timepoint and ROI
+        self.fc_out = nn.Linear(d_model, output_length)  # Predict a single value per timepoint and ROI
 
         self.input_length = input_length
         self.output_length = output_length
